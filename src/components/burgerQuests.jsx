@@ -1,18 +1,34 @@
 import objArray from './objArray'
 import Arrow from '../assets/icon-arrow-down.svg'
 import { styled } from 'styled-components';
+import { useState } from 'react';
+
 
 const AskAndAnswer = () => {
+
+    const [display, setDisplay] = useState(new Array(objArray.length).fill(false));
+
+    function handleDisplay(e) {
+        objArray.map(i => {
+            if(e.currentTarget.firstChild.textContent === i.question) {
+                setDisplay(display.map((isDisplayed,index) => {
+                    if(i.id-1 === index) {
+                        return !isDisplayed
+                    }
+                }))
+            }
+        })
+    }
     return (
         <Article>
             <h1>FAQ</h1>
             {objArray.map(obj => {
                 return <div className='border' key={obj.id}>
-                        <div>
-                            <p>{obj.question}</p>
-                            <img src={Arrow} alt="Arrow down" />
+                        <div onClick={handleDisplay}>
+                            <Pbold about={display[obj.id-1]}>{obj.question}</Pbold>
+                            <Img about={display[obj.id-1]} src={Arrow} alt="Arrow down" />
                         </div>
-                        <Pnone>{obj.answer}</Pnone>
+                        <p>{display[obj.id-1] ? obj.answer : null}</p>
                     </div>
             })}
         </Article>
@@ -20,6 +36,8 @@ const AskAndAnswer = () => {
 }
 
 export default AskAndAnswer;
+
+
 
 const Article = styled.article`
     padding: 0 2.4rem 4.8rem 2.4rem;
@@ -45,9 +63,9 @@ const Article = styled.article`
         justify-content: space-between;
         p {
             font-size: 1.3rem;
-            color: #4B4C5F;
             line-height: 1.6rem;
             margin: 1.7rem 0;
+            color: #4B4C5F;
         }
     }
     img {
@@ -78,6 +96,9 @@ const Article = styled.article`
         }
     }
 `
-const Pnone = styled.p`
-    display: none;
+const Pbold = styled.p`
+    font-weight: ${props => props.about ? 700 : 400} !important;
+`
+const Img = styled.img`
+    transform: ${props => props.about ? 'rotate(180deg)' : 'rotate(0)'};
 `
